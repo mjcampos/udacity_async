@@ -105,14 +105,14 @@ function runRace(raceID) {
 		var raceInterval = setInterval(function() {
 			getRace(raceID)
 				.then(res => {
-					const {RaceStatus} = res;
+					const {status} = res;
 
 					/* 
 						TODO - if the race info status property is "in-progress", update the leaderboard by calling:
 
 						renderAt('#leaderBoard', raceProgress(res.positions))
 					*/
-					if (RaceStatus === "in-progress") {
+					if (status === "in-progress") {
 						renderAt('#leaderBoard', raceProgress(res.positions));
 
 					/* 
@@ -122,7 +122,7 @@ function runRace(raceID) {
 						renderAt('#race', resultsView(res.positions)) // to render the results view
 						reslove(res) // resolve the promise
 					*/
-					} else if(RaceStatus === "finished") {
+					} else if(status === "finished") {
 						clearInterval(raceInterval) // to stop the interval from repeating
 						renderAt('#race', resultsView(res.positions)) // to render the results view
 						resolve(res) // resolve the promise
@@ -300,8 +300,8 @@ function resultsView(positions) {
 }
 
 function raceProgress(positions) {
-	let userPlayer = positions.find(e => e.id === store.player_id)
-	userPlayer.driver_name += " (you)"
+	let userPlayer = positions.find(e => e.id === parseInt(store.player_id));
+	userPlayer.driver_name += " (you)";
 
 	positions = positions.sort((a, b) => (a.segment > b.segment) ? -1 : 1)
 	let count = 1
@@ -387,7 +387,7 @@ function getRace(id) {
 	return fetch(`${SERVER}/api/races/${id - 1}`, {
 		method: 'GET',
 		...defaultFetchOpts()
-	});
+	}).then(res => res.json());
 }
 
 function startRace(id) {
