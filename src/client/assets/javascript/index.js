@@ -88,9 +88,6 @@ async function handleCreateRace() {
 	// render starting UI
 	renderAt('#race', renderRaceStartView(race.Track));
 
-	
-
-
 	// The race has been created, now start the countdown
 	// TODO - call the async function runCountdown
 	await runCountdown();
@@ -387,18 +384,18 @@ function createRace(player_id, track_id) {
 
 function getRace(id) {
 	// GET request to `${SERVER}/api/races/${id}`
-	return fetch(`${SERVER}/api/races/${id}`, {
+	return fetch(`${SERVER}/api/races/${id - 1}`, {
 		method: 'GET',
 		...defaultFetchOpts()
 	});
 }
 
 function startRace(id) {
-	return fetch(`${SERVER}/api/races/${id}/start`, {
+	return fetch(`${SERVER}/api/races/${id - 1}/start`, {
 		method: 'POST',
 		...defaultFetchOpts(),
 	})
-	.then(res => res.json())
+	.then(res => res)
 	.catch(err => console.log("Problem with getRace request::", err))
 }
 
@@ -406,10 +403,8 @@ function accelerate(id) {
 	// POST request to `${SERVER}/api/races/${id}/accelerate`
 	// options parameter provided as defaultFetchOpts
 	// no body or datatype needed for this request
-	fetch(`${SERVER}/api/races/${id}/accelerate`, {
+	fetch(`${SERVER}/api/races/${id - 1}/accelerate`, {
 		method: 'POST',
 		...defaultFetchOpts()
-	}).then(res => {
-		console.log("res", res);
 	});
 }
